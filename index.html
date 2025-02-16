@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stupid google api email thing</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <h1>Sign in with Google</h1>
+    <button onclick="signInWithGoogle()">Sign In</button>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAhuW81Ne__hsvNmgH25vvEWeHZe4ZeuoM",
+            authDomain: "dfdfdfd-8a4aa.firebaseapp.com",
+            projectId: "dfdfdfd-8a4aa",
+            storageBucket: "dfdfdfd-8a4aa.firebasestorage.app",
+            messagingSenderId: "84282783703",
+            appId: "1:84282783703:web:a45061abd62978c8417d92",
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        function signInWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider)
+                .then(result => {
+                    const user = result.user;
+                    console.log("User Email:", user.email);
+
+                    fetch('http://localhost:3000/save-email', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: user.email })
+                    })
+                    .then(response => response.text())
+                    .then(data => console.log("Server Response:", data))
+                    .catch(error => console.error("Fetch Error:", error));
+                })
+                .catch(error => console.error("Sign-in Error:", error));
+        }
+    </script>
+</body>
+</html>
